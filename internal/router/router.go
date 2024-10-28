@@ -23,11 +23,11 @@ func Initialize() {
 	router := gin.Default()
 
 	router.POST("/rating", func(c *gin.Context) {
-		web.CreateRatingHandler(c, &uri)
+		web.CreateRatingHandler(c, uri)
 	})
 
 	router.GET("/ratings", func(c *gin.Context) {
-		web.GetRatingsHandler(c, &uri)
+		web.GetRatingsHandler(c, uri)
 	})
 
 	router.Run()

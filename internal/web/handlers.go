@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func CreateRatingHandler(c *gin.Context, uri *string) {
+func CreateRatingHandler(c *gin.Context, uri string) {
 	var ratingDTO models.RatingDTO
 	if err := c.ShouldBindJSON(&ratingDTO); err != nil {
 		handleError(c, 400, "Invalid request")
@@ -23,9 +23,13 @@ func CreateRatingHandler(c *gin.Context, uri *string) {
 		Feedback: ratingDTO.Feedback,
 	}
 
-	service := services.NewRatingService(uri)
+	service, err := services.NewRatingService(uri)
 
-	if err := service.CreateRating(rating); err != nil {
+	if err != nil {
+		panic(err)
+	}
+
+	if err := service.CreateRating(&rating); err != nil {
 		handleError(c, 500, "Internal server error")
 		return
 	}
@@ -36,8 +40,13 @@ func CreateRatingHandler(c *gin.Context, uri *string) {
 	})
 }
 
-func GetRatingsHandler(c *gin.Context, uri *string) {
-	service := services.NewRatingService(uri)
+func GetRatingsHandler(c *gin.Context, uri string) {
+	service, err := services.NewRatingService(uri)
+
+	if err != nil {
+		panic(err)
+	}
+
 	ratings, err := service.GetRatings()
 
 	if err != nil {

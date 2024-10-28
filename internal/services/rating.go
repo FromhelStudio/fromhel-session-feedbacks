@@ -18,54 +18,55 @@ type Rating struct {
 }
 
 type RatingService struct {
-	mongoUri *string
+	client *mongo.Client
 }
 
-func NewRatingService(mongoUri *string) *RatingService {
-	return &RatingService{mongoUri: mongoUri}
-}
-
-func (s *RatingService) CreateRating(rating Rating) error {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(*s.mongoUri))
-
+func NewRatingService(mongoUri string) (*RatingService, error) {
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongoUri))
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	collection := client.Database("bulletSpeel").Collection("ratings")
+	return &RatingService{
+		client: client,
+	}, nil
+}
+
+func (s *RatingService) CreateRating(rating *Rating) error {
+	collection := s.client.Database("bulletSpeel").Collection("ratings")
 
 	rating.CreatedAt = time.Now()
 	rating.Id = uuid.New().String()
-	collection.InsertOne(
-		context.Background(),
-		rating,
-	)
 
-	return nil
+	_, err := collection.InsertOne(context.Background(), rating)
+	return err
 }
 
 func (s *RatingService) GetRatings() ([]Rating, error) {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(*s.mongoUri))
-
-	if err != nil {
-		panic(err)
-	}
-
-	collection := client.Database("bulletSpeel").Collection("ratings")
+	collection := s.client.Database("bulletSpeel").Collection("ratings")
 
 	cursor, err := collection.Find(context.Background(), bson.D{})
-
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
+	defer cursor.Close(context.Background())
 
 	var ratings []Rating
-
 	for cursor.Next(context.Background()) {
 		var rating Rating
-		cursor.Decode(&rating)
+		if err := cursor.Decode(&rating); err != nil {
+			return nil, err
+		}
 		ratings = append(ratings, rating)
 	}
 
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
 	return ratings, nil
+}
+
+func (s *RatingService) Close() error {
+	return s.client.Disconnect(context.Background())
 }
