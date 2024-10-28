@@ -36,6 +36,21 @@ func CreateRatingHandler(c *gin.Context, uri *string) {
 	})
 }
 
+func GetRatingsHandler(c *gin.Context, uri *string) {
+	service := services.NewRatingService(uri)
+	ratings, err := service.GetRatings()
+
+	if err != nil {
+		handleError(c, 500, "Internal server error")
+		return
+	}
+
+	c.JSON(200, gin.H{
+		"ratings":    ratings,
+		"statusCode": 200,
+	})
+}
+
 func handleError(c *gin.Context, statusCode int, message string) {
 	c.JSON(statusCode, gin.H{"error": message, "statusCode": statusCode})
 }

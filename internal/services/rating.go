@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -41,4 +42,30 @@ func (s *RatingService) CreateRating(rating Rating) error {
 	)
 
 	return nil
+}
+
+func (s *RatingService) GetRatings() ([]Rating, error) {
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(*s.mongoUri))
+
+	if err != nil {
+		panic(err)
+	}
+
+	collection := client.Database("bulletSpeel").Collection("ratings")
+
+	cursor, err := collection.Find(context.Background(), bson.D{})
+
+	if err != nil {
+		panic(err)
+	}
+
+	var ratings []Rating
+
+	for cursor.Next(context.Background()) {
+		var rating Rating
+		cursor.Decode(&rating)
+		ratings = append(ratings, rating)
+	}
+
+	return ratings, nil
 }

@@ -26,6 +26,10 @@ func Initialize() {
 		web.CreateRatingHandler(c, &uri)
 	})
 
+	router.GET("/ratings", func(c *gin.Context) {
+		web.GetRatingsHandler(c, &uri)
+	})
+
 	router.Run()
 
 }
