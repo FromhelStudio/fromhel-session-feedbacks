@@ -13,6 +13,11 @@ func CreateRatingHandler(c *gin.Context, uri *string) {
 		return
 	}
 
+	if ratingDTO.Rating < 1 || ratingDTO.Rating > 5 {
+		handleError(c, 400, "Rating must be between 1 and 5")
+		return
+	}
+
 	rating := services.Rating{
 		Rating:   ratingDTO.Rating,
 		Feedback: ratingDTO.Feedback,
@@ -32,5 +37,5 @@ func CreateRatingHandler(c *gin.Context, uri *string) {
 }
 
 func handleError(c *gin.Context, statusCode int, message string) {
-	c.JSON(statusCode, gin.H{"error": message})
+	c.JSON(statusCode, gin.H{"error": message, "statusCode": statusCode})
 }
