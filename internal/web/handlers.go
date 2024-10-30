@@ -21,7 +21,7 @@ func CreateRatingHandler(c *gin.Context, uri string) {
 		return
 	}
 
-	rating := services.Rating{
+	rating := models.Rating{
 		Rating:   ratingDTO.Rating,
 		Feedback: ratingDTO.Feedback,
 	}

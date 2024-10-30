@@ -5,18 +5,12 @@ import (
 	"log"
 	"time"
 
+	"github.com/FromhelStudio/fromhel-session-feedbacks/internal/models"
 	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-type Rating struct {
-	Id        string    `bson:"_id"`
-	Rating    int       `bson:"rating"`
-	Feedback  string    `bson:"feedback"`
-	CreatedAt time.Time `bson:"createdAt"`
-}
 
 type RatingService struct {
 	client *mongo.Client
@@ -35,7 +29,7 @@ func NewRatingService(mongoUri string, ctx context.Context) (*RatingService, err
 	}, nil
 }
 
-func (s *RatingService) CreateRating(rating *Rating) error {
+func (s *RatingService) CreateRating(rating *models.Rating) error {
 	collection := s.client.Database("bulletSpeel").Collection("ratings")
 
 	rating.CreatedAt = time.Now()
@@ -45,7 +39,7 @@ func (s *RatingService) CreateRating(rating *Rating) error {
 	return err
 }
 
-func (s *RatingService) GetRatings(page int64) ([]Rating, error) {
+func (s *RatingService) GetRatings(page int64) ([]models.Rating, error) {
 	collection := s.client.Database("bulletSpeel").Collection("ratings")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -65,9 +59,9 @@ func (s *RatingService) GetRatings(page int64) ([]Rating, error) {
 	}
 	defer cursor.Close(ctx)
 
-	var ratings []Rating
+	var ratings []models.Rating
 	for cursor.Next(ctx) {
-		var rating Rating
+		var rating models.Rating
 		if err := cursor.Decode(&rating); err != nil {
 			log.Println(err)
 			continue
