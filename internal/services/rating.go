@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -57,7 +58,8 @@ func (s *RatingService) GetRatings() ([]Rating, error) {
 	for cursor.Next(*s.ctx) {
 		var rating Rating
 		if err := cursor.Decode(&rating); err != nil {
-			return nil, err
+			log.Println(err)
+			continue
 		}
 		ratings = append(ratings, rating)
 	}
