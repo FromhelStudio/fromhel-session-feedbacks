@@ -58,12 +58,9 @@ func GetRatingsHandler(c *gin.Context, uri string) {
 	// Convert page to int
 	pageInt, err := strconv.ParseInt(page, 10, 64)
 
-	if err != nil {
+	if err != nil || pageInt < 1 {
 		handleError(c, 400, "Invalid page")
-	}
-
-	if pageInt < 1 {
-		handleError(c, 400, "Invalid page")
+		return
 	}
 
 	ratings, err := service.GetRatings(pageInt)
