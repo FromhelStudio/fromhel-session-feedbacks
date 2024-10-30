@@ -48,14 +48,17 @@ func (s *RatingService) CreateRating(rating *Rating) error {
 func (s *RatingService) GetRatings() ([]Rating, error) {
 	collection := s.client.Database("bulletSpeel").Collection("ratings")
 
-	cursor, err := collection.Find(*s.ctx, bson.D{})
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	cursor, err := collection.Find(ctx, bson.D{})
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(*s.ctx)
+	defer cursor.Close(ctx)
 
 	var ratings []Rating
-	for cursor.Next(*s.ctx) {
+	for cursor.Next(ctx) {
 		var rating Rating
 		if err := cursor.Decode(&rating); err != nil {
 			log.Println(err)
