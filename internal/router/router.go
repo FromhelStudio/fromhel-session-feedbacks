@@ -30,6 +30,10 @@ func Initialize() {
 		web.GetRatingsHandler(c, uri)
 	})
 
+	router.POST("/session", func(ctx *gin.Context) {
+		web.CreateSessionHandler(ctx, uri)
+	})
+
 	router.Run()
 
 }
