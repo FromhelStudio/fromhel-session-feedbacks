@@ -1,6 +1,8 @@
 package web
 
 import (
+	"context"
+
 	"github.com/FromhelStudio/fromhel-session-feedbacks/internal/models"
 	"github.com/FromhelStudio/fromhel-session-feedbacks/internal/services"
 	"github.com/gin-gonic/gin"
@@ -23,7 +25,7 @@ func CreateRatingHandler(c *gin.Context, uri string) {
 		Feedback: ratingDTO.Feedback,
 	}
 
-	service, err := services.NewRatingService(uri)
+	service, err := services.NewRatingService(uri, context.Background())
 
 	if err != nil {
 		panic(err)
@@ -41,7 +43,7 @@ func CreateRatingHandler(c *gin.Context, uri string) {
 }
 
 func GetRatingsHandler(c *gin.Context, uri string) {
-	service, err := services.NewRatingService(uri)
+	service, err := services.NewRatingService(uri, context.Background())
 
 	if err != nil {
 		panic(err)

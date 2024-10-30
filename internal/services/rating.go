@@ -19,9 +19,10 @@ type Rating struct {
 
 type RatingService struct {
 	client *mongo.Client
+	ctx    *context.Context
 }
 
-func NewRatingService(mongoUri string) (*RatingService, error) {
+func NewRatingService(mongoUri string, ctx context.Context) (*RatingService, error) {
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongoUri))
 	if err != nil {
 		return nil, err
@@ -29,6 +30,7 @@ func NewRatingService(mongoUri string) (*RatingService, error) {
 
 	return &RatingService{
 		client: client,
+		ctx:    &ctx,
 	}, nil
 }
 
@@ -38,21 +40,21 @@ func (s *RatingService) CreateRating(rating *Rating) error {
 	rating.CreatedAt = time.Now()
 	rating.Id = uuid.New().String()
 
-	_, err := collection.InsertOne(context.Background(), rating)
+	_, err := collection.InsertOne(*s.ctx, rating)
 	return err
 }
 
 func (s *RatingService) GetRatings() ([]Rating, error) {
 	collection := s.client.Database("bulletSpeel").Collection("ratings")
 
-	cursor, err := collection.Find(context.Background(), bson.D{})
+	cursor, err := collection.Find(*s.ctx, bson.D{})
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.Background())
+	defer cursor.Close(*s.ctx)
 
 	var ratings []Rating
-	for cursor.Next(context.Background()) {
+	for cursor.Next(*s.ctx) {
 		var rating Rating
 		if err := cursor.Decode(&rating); err != nil {
 			return nil, err
@@ -68,5 +70,5 @@ func (s *RatingService) GetRatings() ([]Rating, error) {
 }
 
 func (s *RatingService) Close() error {
-	return s.client.Disconnect(context.Background())
+	return s.client.Disconnect(*s.ctx)
 }
