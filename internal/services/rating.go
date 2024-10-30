@@ -45,13 +45,21 @@ func (s *RatingService) CreateRating(rating *Rating) error {
 	return err
 }
 
-func (s *RatingService) GetRatings() ([]Rating, error) {
+func (s *RatingService) GetRatings(page int64) ([]Rating, error) {
 	collection := s.client.Database("bulletSpeel").Collection("ratings")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	cursor, err := collection.Find(ctx, bson.D{})
+	limit := int64(10)
+	skip := int64((page - 1) * 10)
+
+	cursor, err := collection.Find(ctx, bson.M{}, &options.FindOptions{
+		Limit: &limit,
+		Skip:  &skip,
+		Sort:  bson.M{"createdAt": -1},
+	})
+
 	if err != nil {
 		return nil, err
 	}

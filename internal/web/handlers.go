@@ -2,6 +2,7 @@ package web
 
 import (
 	"context"
+	"strconv"
 
 	"github.com/FromhelStudio/fromhel-session-feedbacks/internal/models"
 	"github.com/FromhelStudio/fromhel-session-feedbacks/internal/services"
@@ -49,7 +50,23 @@ func GetRatingsHandler(c *gin.Context, uri string) {
 		panic(err)
 	}
 
-	ratings, err := service.GetRatings()
+	page := c.Param("page")
+	if page == "" {
+		page = "1"
+	}
+
+	// Convert page to int
+	pageInt, err := strconv.ParseInt(page, 10, 64)
+
+	if err != nil {
+		handleError(c, 400, "Invalid page")
+	}
+
+	if pageInt < 1 {
+		handleError(c, 400, "Invalid page")
+	}
+
+	ratings, err := service.GetRatings(pageInt)
 
 	if err != nil {
 		handleError(c, 500, "Internal server error")
