@@ -75,7 +75,3 @@ func GetRatingsHandler(c *gin.Context, uri string) {
 		"statusCode": 200,
 	})
 }
-
-func handleError(c *gin.Context, statusCode int, message string) {
-	c.JSON(statusCode, gin.H{"error": message, "statusCode": statusCode})
-}
