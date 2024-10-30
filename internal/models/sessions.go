@@ -15,3 +15,15 @@ type Sessions struct {
 	Items        bool      `bson:"items"`
 	CreatedAt    time.Time `bson:"createdAt"`
 }
+
+type SessionsDTO struct {
+	Game         string  `json:"gameName"`
+	Timespent    float32 `json:"timespent"`
+	Deaths       int     `json:"deaths"`
+	ColorPicked  int     `json:"colorPicked"`
+	EnemysKilled int     `json:"enemysKilled"`
+	GameFinished bool    `json:"gameFinished"`
+	Money        float32 `json:"money"`
+	Ammunation   int     `json:"ammunation"`
+	Items        bool    `json:"items"`
+}
