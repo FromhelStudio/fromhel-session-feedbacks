@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/FromhelStudio/fromhel-session-feedbacks/internal/models"
@@ -28,14 +29,23 @@ func NewSessionService(mongoUri string, ctx context.Context) (*SessionsService, 
 }
 
 func (s *SessionsService) CreateSession(session models.SessionsDTO) error {
-	collection := s.client.Database("bulletSpeel").Collection("sessions")
+	var collection *mongo.Collection
+
+	session.Game = strings.Trim(session.Game, " ")
+	session.Game = strings.ToLower(session.Game)
+
+	if session.Game == "bulletspeel" {
+		collection = s.client.Database("bulletspeel_db").Collection("sessions")
+	} else {
+		collection = s.client.Database("cordel_db").Collection("sessions")
+	}
 
 	ctx, cancel := context.WithTimeout(*s.ctx, 10*time.Second)
 	defer cancel()
 
 	model := models.Sessions{
 		Id:           uuid.NewString(),
-		Game:         "Bullet Speel",
+		Game:         session.Game,
 		Timespent:    session.Timespent,
 		Deaths:       session.Deaths,
 		ColorPicked:  session.ColorPicked,
