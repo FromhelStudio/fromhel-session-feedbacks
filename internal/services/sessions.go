@@ -31,10 +31,9 @@ func NewSessionService(mongoUri string, ctx context.Context) (*SessionsService, 
 func (s *SessionsService) CreateSession(session models.SessionsDTO) error {
 	var collection *mongo.Collection
 
-	session.Game = strings.Trim(session.Game, " ")
-	session.Game = strings.ToLower(session.Game)
+	gameName := strings.Trim(strings.ToLower(session.Game), " ")
 
-	if session.Game == "bulletspeel" {
+	if gameName == "bulletspeel" {
 		collection = s.client.Database("bulletspeel_db").Collection("sessions")
 	} else {
 		collection = s.client.Database("cordel_db").Collection("sessions")
@@ -45,7 +44,7 @@ func (s *SessionsService) CreateSession(session models.SessionsDTO) error {
 
 	model := models.Sessions{
 		Id:           uuid.NewString(),
-		Game:         session.Game,
+		Game:         gameName,
 		Timespent:    session.Timespent,
 		Deaths:       session.Deaths,
 		ColorPicked:  session.ColorPicked,
