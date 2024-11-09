@@ -3,6 +3,7 @@ package web
 import (
 	"context"
 	"strconv"
+	"strings"
 
 	"github.com/FromhelStudio/fromhel-session-feedbacks/internal/models"
 	"github.com/FromhelStudio/fromhel-session-feedbacks/internal/services"
@@ -52,6 +53,20 @@ func CreateRatingHandler(c *gin.Context, uri string) {
 func GetRatingsHandler(c *gin.Context, uri string) {
 	service, err := services.NewRatingService(uri, context.Background())
 
+	gameName := c.Query("game")
+
+	if gameName == "" {
+		handleError(c, 400, "Game is required")
+		return
+	}
+
+	if gameName != "bulletspeel" && gameName != "cordel" {
+		handleError(c, 400, "Invalid game")
+		return
+	}
+
+	gameName = strings.Trim(strings.ToLower(gameName), " ")
+
 	if err != nil {
 		panic(err)
 	}
@@ -69,7 +84,7 @@ func GetRatingsHandler(c *gin.Context, uri string) {
 		return
 	}
 
-	ratings, err := service.GetRatings(pageInt)
+	ratings, err := service.GetRatings(pageInt, gameName)
 
 	if err != nil {
 		handleError(c, 500, "Internal server error")

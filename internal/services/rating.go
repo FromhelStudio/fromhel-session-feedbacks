@@ -45,8 +45,14 @@ func (s *RatingService) CreateRating(rating *models.Rating) error {
 	return err
 }
 
-func (s *RatingService) GetRatings(page int64) ([]models.Rating, error) {
-	collection := s.client.Database("bulletSpeel").Collection("ratings")
+func (s *RatingService) GetRatings(page int64, gameName string) ([]models.Rating, error) {
+	var collection *mongo.Collection
+
+	if gameName == "bulletspeel" {
+		collection = s.client.Database("bulletspeel_db").Collection("ratings")
+	} else {
+		collection = s.client.Database("cordel_db").Collection("ratings")
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
