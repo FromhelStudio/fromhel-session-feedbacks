@@ -30,7 +30,13 @@ func NewRatingService(mongoUri string, ctx context.Context) (*RatingService, err
 }
 
 func (s *RatingService) CreateRating(rating *models.Rating) error {
-	collection := s.client.Database("bulletSpeel").Collection("ratings")
+	var collection *mongo.Collection
+
+	if rating.Game == "bulletspeel" {
+		collection = s.client.Database("bulletspeel_db").Collection("ratings")
+	} else {
+		collection = s.client.Database("cordel_db").Collection("ratings")
+	}
 
 	rating.CreatedAt = time.Now()
 	rating.Id = uuid.New().String()

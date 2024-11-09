@@ -21,7 +21,13 @@ func CreateRatingHandler(c *gin.Context, uri string) {
 		return
 	}
 
+	if ratingDTO.Game == "" {
+		handleError(c, 400, "Game is required")
+		return
+	}
+
 	rating := models.Rating{
+		Game:     ratingDTO.Game,
 		Rating:   ratingDTO.Rating,
 		Feedback: ratingDTO.Feedback,
 	}
