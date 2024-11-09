@@ -1,9 +1,29 @@
-@url = "http://localhost:8080"
+@url = http://localhost:8080
 
+### Create Rating
 POST {{url}}/rating
 Content-Type: application/json
 
 {
-  "rating": 5,
-  "feedback": "Great!"
+    "rating": 5,
+    "feedback": "Great session!"
+}
+
+### Get Ratings
+GET {{url}}/rating/1?game=bulletspeel
+
+### Create Session
+POST {{url}}/session
+Content-Type: application/json
+
+{
+    "gameName": "bulletspeel",
+    "timespent": 120,
+    "deaths": 3,
+    "colorPicked": 2,
+    "enemysKilled": 15,
+    "gameFinished": true,
+    "money": 100,
+    "ammunation": 50,
+    "items": true
 }
