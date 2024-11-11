@@ -34,8 +34,8 @@ func Initialize() {
 		web.CreateSessionHandler(ctx, uri)
 	})
 
-	port := os.Getenv("PORT")
-	if port == "" {
+	port, exists := os.LookupEnv("PORT")
+	if !exists{
 		port = "8080" 
 	}
 	router.Run(":" + port)
