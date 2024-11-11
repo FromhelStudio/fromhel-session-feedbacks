@@ -34,6 +34,10 @@ func Initialize() {
 		web.CreateSessionHandler(ctx, uri)
 	})
 
-	router.Run()
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" 
+	}
+	router.Run(":" + port)
 
 }
