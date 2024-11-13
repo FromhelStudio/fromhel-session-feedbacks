@@ -1,1 +1,2 @@
-web: main
+web: /app/fromhel-session-feedbacks
+
