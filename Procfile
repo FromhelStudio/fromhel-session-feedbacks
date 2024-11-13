@@ -1,2 +1,2 @@
-web: /app/fromhel-session-feedbacks
+web: /cmd/server/main.go
 
