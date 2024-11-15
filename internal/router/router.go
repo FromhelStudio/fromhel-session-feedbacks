@@ -34,9 +34,13 @@ func Initialize() {
 		web.CreateSessionHandler(ctx, uri)
 	})
 
+	router.GET("/session/:page", func(ctx *gin.Context) {
+		web.GetSessionsHandler(ctx, uri)
+	})
+
 	port, exists := os.LookupEnv("PORT")
-	if !exists{
-		port = "8080" 
+	if !exists {
+		port = "8080"
 	}
 	router.Run(":" + port)
 
