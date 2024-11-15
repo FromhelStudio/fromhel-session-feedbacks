@@ -1,15 +1,18 @@
 @url = http://localhost:8080
 
+### "gameName"/?game= can be bulletspeel or cordel
+
 ### Create Rating
 POST {{url}}/rating
 Content-Type: application/json
 
 {
     "rating": 5,
-    "feedback": "Great session!"
+    "feedback": "Great session!",
+    "gameName": "bulletspeel"
 }
 
-### Get Ratings
+### Get Ratings by Page (limit 10 by page)
 GET {{url}}/rating/1?game=bulletspeel
 
 ### Create Session
@@ -17,7 +20,7 @@ POST {{url}}/session
 Content-Type: application/json
 
 {
-    "gameName": "bulletspeel",
+    "gameName": "cordel",
     "timespent": 120,
     "deaths": 3,
     "colorPicked": 2,
@@ -27,3 +30,6 @@ Content-Type: application/json
     "ammunation": 50,
     "items": true
 }
+
+### Get Session by Page (limit 10 by page)
+GET {{url}}/session/1?game=bulletspeel
