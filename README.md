@@ -15,44 +15,44 @@ This project is a web service for collecting session feedback ratings. It is bui
 
 1. Clone the repository:
 
-    ```sh
-    git clone https://github.com/FromhelStudio/fromhel-session-feedbacks.git
-    cd fromhel-session-feedbacks
-    ```
+   ```sh
+   git clone https://github.com/FromhelStudio/fromhel-session-feedbacks.git
+   cd fromhel-session-feedbacks
+   ```
 
 2. Install dependencies:
 
-    ```sh
-    go mod tidy
-    ```
+   ```sh
+   go mod tidy
+   ```
 
 3. Copy the example environment file and set your MongoDB URI:
 
-    ```sh
-    cp .env.example .env
-    ```
+   ```sh
+   cp .env.example .env
+   ```
 
-    Edit the [.env](http://_vscodecontentref_/16) file to include your MongoDB URI:
+   Edit the [.env](http://_vscodecontentref_/16) file to include your MongoDB URI:
 
-    ```
-    MONGODB_URI=mongodb://your_mongodb_uri
-    ```
+   ```
+   MONGODB_URI=mongodb://your_mongodb_uri
+   ```
 
 ### Running the Server
 
 1. Navigate to the `cmd/server` directory:
 
-    ```sh
-    cd cmd/server
-    ```
+   ```sh
+   cd cmd/server
+   ```
 
 2. Run the server:
 
-    ```sh
-    go run [main.go](http://_vscodecontentref_/17)
-    ```
+   ```sh
+   go run [main.go](http://_vscodecontentref_/17)
+   ```
 
-    The server will start on `http://localhost:8080`.
+   The server will start on `http://localhost:8080`.
 
 ### API Endpoints
 
@@ -62,45 +62,47 @@ This project is a web service for collecting session feedback ratings. It is bui
 - **Method:** `POST`
 - **Request Body:**
 
-    ```json
-    {
-        "rating": 1,
-        "feedback": "Your feedback here"
-    }
-    ```
+  ```json
+  {
+    "rating": 1,
+    "feedback": "Your feedback here",
+    "gameName": "bulletspeel" // bulletspeel or cordel only
+  }
+  ```
 
 - **Response:**
 
-    ```json
-    {
-        "message": "Rating created",
-        "statusCode": 201
-    }
-    ```
+  ```json
+  {
+    "message": "Rating created",
+    "statusCode": 201
+  }
+  ```
 
 #### Get Ratings
 
 - **URL:** `/rating/:page`
 - **Method:** `GET`
 - **Query Parameters:**
+
   - `game` (required): The name of the game (either "bulletspeel" or "cordel")
 
 - **Response:**
 
-    ```json
-    {
-        "ratings": [
-            {
-                "id": "string",
-                "game": "string",
-                "rating": 1,
-                "feedback": "string",
-                "createdAt": "string"
-            }
-        ],
-        "statusCode": 200
-    }
-    ```
+  ```json
+  {
+    "ratings": [
+      {
+        "id": "string",
+        "game": "string",
+        "rating": 1,
+        "feedback": "string",
+        "createdAt": "string"
+      }
+    ],
+    "statusCode": 200
+  }
+  ```
 
 #### Create Session
 
@@ -108,28 +110,58 @@ This project is a web service for collecting session feedback ratings. It is bui
 - **Method:** `POST`
 - **Request Body:**
 
-    ```json
-    {
-        "gameName": "string",
-        "timespent": 0,
-        "deaths": 0,
-        "colorPicked": 0,
-        "enemysKilled": 0,
-        "gameFinished": true,
-        "money": 0,
-        "ammunation": 0,
-        "items": true
-    }
-    ```
+  ```json
+  {
+    "gameName": "bulletspeel", // bulletspeel or cordel only
+    "timespent": 0,
+    "deaths": 0,
+    "colorPicked": 0,
+    "enemysKilled": 0,
+    "gameFinished": true,
+    "money": 0,
+    "ammunation": 0,
+    "items": true
+  }
+  ```
 
 - **Response:**
 
-    ```json
-    {
-        "message": "Created.",
-        "statusCode": 201
-    }
-    ```
+  ```json
+  {
+    "message": "Created.",
+    "statusCode": 201
+  }
+  ```
+
+### Get Sessions
+
+- **URL** `/session/:page`
+- **Method** `GET`
+- **Query Parameters:**
+
+  - `game` (required): The name of the game (either "bulletspeel" or "cordel")
+
+- **Response**
+  ```json
+  {
+    "sessions": [
+      {
+        "Id": "UUID/string",
+        "Game": "string",
+        "Timespent": 1,
+        "Deaths": 1,
+        "ColorPicked": 1,
+        "EnemysKilled": 1,
+        "GameFinished": true,
+        "Money": 1,
+        "Ammunation": 1,
+        "Items": true,
+        "CreatedAt": "Date/string"
+      }
+    ],
+    "statusCode": 200
+  }
+  ```
 
 ### Project Details
 
